@@ -7,6 +7,8 @@
 #define HEIGHT    1080
 #define WIDTH     1920
 #define DEPTH     10
+#define AMBIENT_LUMINOSITY 0.05
+#define INTENSITY 0.8
 
 typedef struct {
     double x;
@@ -44,6 +46,23 @@ vector_t vector_sum(vector_t a, vector_t b) {
     return result;
 }
 
+vector_t vector_multiply(vector_t v, double k) {
+    vector_t result;
+    result.x = v.x * k;
+    result.y = v.y * k;
+    result.z = v.z * k;
+    return result;
+}
+
+vector_t vector_normalize(vector_t v) {
+    double magnitude = sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+    vector_t result;
+    result.x = v.x / magnitude;
+    result.y = v.y / magnitude;
+    result.z = v.z / magnitude;
+    return result;
+}
+
 double shoot(ray_t ray, sphere_t sphere) {
     vector_t oc = vector_subtract(ray.origin, sphere.center);
     double a = vector_dot(ray.direction, ray.direction);
@@ -77,6 +96,9 @@ int main() {
         1
     };
 
+    vector_t source = {1, 1, 1};
+    source = vector_normalize(source);
+
     vector_t origin = {0, 0, 0};
 
     uint8_t pixels[HEIGHT * WIDTH * 3];
@@ -95,12 +117,25 @@ int main() {
             };
 
             double t = shoot(ray, sphere);
+            if (t < 0) {
+                int index = (i * WIDTH + j) * 3;
+                pixels[index] = t >= 0? 0xff : 0x00;
+                pixels[index + 1] = t >= 0? 0xff : 0x00;
+                pixels[index + 2] = t >= 0? 0xff : 0x00;
+                continue;
+            }
 
-
+            vector_t hit = vector_multiply(point, t);
+            vector_t normal = vector_subtract(hit, sphere.center);
+            normal = vector_normalize(normal);
+            double luminosity = vector_dot(normal, source);
+            if (luminosity < 0) luminosity = AMBIENT_LUMINOSITY;
+            else luminosity = AMBIENT_LUMINOSITY + (1 - AMBIENT_LUMINOSITY) * INTENSITY * luminosity;
+            uint8_t l = luminosity * 255;
             int index = (i * WIDTH + j) * 3;
-            pixels[index] = t >= 0? 0xff : 0x00;
-            pixels[index + 1] = t >= 0? 0xff : 0x00;
-            pixels[index + 2] = t >= 0? 0xff : 0x00;            
+            pixels[index] = l;
+            pixels[index + 1] = l;
+            pixels[index + 2] = l;
         }
     }
 
