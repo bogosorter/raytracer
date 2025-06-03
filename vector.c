@@ -37,3 +37,17 @@ vector_t vector_multiply(vector_t v, double k) {
 double vector_dot(vector_t a, vector_t b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
+
+vector_t vector_cross(vector_t a, vector_t b) {
+    vector_t result;
+    result.x = a.y * b.z - a.z * b.y;
+    result.y = a.z * b.x - a.x * b.z;
+    result.z = a.x * b.y - a.y * b.x;
+    return result;
+}
+
+vector_t vector_project(vector_t a, vector_t b) {
+    b = vector_normalize(b);
+    double magnitude = vector_dot(a, b);
+    return vector_multiply(b, magnitude);
+}
