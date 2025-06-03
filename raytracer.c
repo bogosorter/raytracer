@@ -104,21 +104,35 @@ int main() {
         -1
     };
 
-    triangle_t triangle = {
-        {-5, 3, -20},
-        {-4, -1, -9},
-        {4, -3, -10}
+    triangle_t triangles[] = {
+        {
+            {0, 3, -10},
+            {0, 0, -10},
+            {-2, -2, -8}
+        },
+        {
+            {0, 3, -10},
+            {0, 0, -10},
+            {2, -2, -10}
+        },
+        {
+            {-2, -2, -8},
+            {2, -2, -10},
+            {0, 0, -10}
+        }
     };
+    vector_t normals[3];
+    for (int i = 0; i < 3; i++) {
+        vector_t ab = vector_subtract(triangles[i].b, triangles[i].a);
+        vector_t ac = vector_subtract(triangles[i].c, triangles[i].a);
+        normals[i] = vector_cross(ab, ac);
+        normals[i] = vector_normalize(normals[i]);
+    }
 
     vector_t source = {1, 1, 1};
     source = vector_normalize(source);
 
     vector_t origin = {0, 0, 0};
-
-    vector_t ab = vector_subtract(triangle.b, triangle.a);
-    vector_t ac = vector_subtract(triangle.c, triangle.a);
-    vector_t normal = vector_cross(ab, ac);
-    normal = vector_normalize(normal);
 
     uint8_t pixels[HEIGHT * WIDTH * 3];
     for (int i = 0; i < HEIGHT; i++) {
@@ -135,23 +149,28 @@ int main() {
                 point
             };
 
-            double t = shoot_triangle(ray, triangle);
-            if (t < 0) {
-                int index = (i * WIDTH + j) * 3;
-                pixels[index] = t >= 0? 0xff : 0x00;
-                pixels[index + 1] = t >= 0? 0xff : 0x00;
-                pixels[index + 2] = t >= 0? 0xff : 0x00;
-                continue;
-            }
-
-            double luminosity = fabs(vector_dot(normal, source));
-            if (luminosity < 0) luminosity = AMBIENT_LUMINOSITY;
-            else luminosity = AMBIENT_LUMINOSITY + (1 - AMBIENT_LUMINOSITY) * INTENSITY * luminosity;
-            uint8_t l = luminosity * 255;
             int index = (i * WIDTH + j) * 3;
-            pixels[index] = l;
-            pixels[index + 1] = l;
-            pixels[index + 2] = l;
+            pixels[index] = 0x00;
+            pixels[index + 1] = 0x00;
+            pixels[index + 2] = 0x00;
+
+            double closest = -1;
+
+            for (int k = 0; k < 3; k++) {
+                double t = shoot_triangle(ray, triangles[k]);
+                if (t >= 0 && (closest == -1 || t < closest)) {
+                    closest = t;
+
+                    double luminosity = fabs(vector_dot(normals[k], source));
+                    if (luminosity < 0) luminosity = AMBIENT_LUMINOSITY;
+                    else luminosity = AMBIENT_LUMINOSITY + (1 - AMBIENT_LUMINOSITY) * INTENSITY * luminosity;
+                    uint8_t l = luminosity * 255;
+                    int index = (i * WIDTH + j) * 3;
+                    pixels[index] = l;
+                    pixels[index + 1] = l;
+                    pixels[index + 2] = l;
+                }
+            }            
         }
     }
 
