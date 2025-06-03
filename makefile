@@ -2,13 +2,13 @@ CC = gcc
 CFLAGS = -Wall -Wextra -O2
 
 TARGET = raytracer
-SRC = raytracer.c bmp.c geometry.c vector.c
+SRC = main.c raytracer.c bmp.c geometry.c vector.c
 OBJ = $(SRC:.c=.o)
 
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-	@$(CC) $(CFLAGS) -o $@ $(OBJ)
+	@$(CC) $(CFLAGS) -o $@ $(OBJ) -lm
 
 %.o: %.c bmp.h
 	@$(CC) $(CFLAGS) -c $< -o $@

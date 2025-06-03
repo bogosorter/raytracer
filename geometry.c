@@ -47,13 +47,13 @@ double shoot_triangle(ray_t ray, triangle_t triangle) {
     vector_t v = vector_subtract(ac, vector_project(ac, bc));
     vector_t ah = vector_subtract(hit, triangle.a);
     double a = 1 - vector_dot(v, ah) / vector_dot(v, ac);
-    if (a < 0 || a > 1) return -1;
+    if (a < 0) return -1;
 
     // Second baricentric coordinate
     v = vector_subtract(bc, vector_project(bc, ac));
     vector_t bh = vector_subtract(hit, triangle.b);
     double b = 1 - vector_dot(v, bh) / vector_dot(v, bc);
-    if (b < 0 || b > 1) return -1;
+    if (b < 0) return -1;
 
     double c = 1 - a - b;
     if (c < 0) return -1;
