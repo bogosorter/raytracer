@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -O2
 
 TARGET = raytracer
-SRC = raytracer.c bmp.c vector.c
+SRC = raytracer.c bmp.c geometry.c vector.c
 OBJ = $(SRC:.c=.o)
 
 all: $(TARGET)
