@@ -22,7 +22,10 @@ int main() {
         .width = WIDTH,
         .fov_angle = FOV_ANGLE,
         .ambient_luminosity = AMBIENT_LUMINOSITY,
-        .light = source
+        .light = source,
+        .camera = {-3, 0.5, 2.5},
+        .forward = vector_normalize((vector_t){1.3, -0.3, -1}),
+        .up = vector_normalize((vector_t){0, 1, 0})
     };
 
     uint8_t pixels[HEIGHT * WIDTH * 3];
