@@ -5,22 +5,22 @@ void raytracer_scene(camera_settings_t settings, int tcount, triangle_t *triangl
     double plane_width = tan(settings.fov_angle / 2.0) * 2;
     double plane_height = plane_width * settings.height / settings.width;
 
+    vector_t origin = {0, 0, 4};
+
     // Point P is the top left point of the screen
     vector_t p = {
-        - plane_width / 2,
-        plane_height / 2,
-        -1
+        - plane_width / 2 + origin.x,
+        plane_height / 2 + origin.y,
+        origin.z - 1
     };
 
     vector_t normals[tcount];
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < tcount; i++) {
         vector_t ab = vector_subtract(triangles[i].b, triangles[i].a);
         vector_t ac = vector_subtract(triangles[i].c, triangles[i].a);
         normals[i] = vector_cross(ab, ac);
         normals[i] = vector_normalize(normals[i]);
     }
-
-    vector_t origin = {0, 0, 0};
     
     for (int i = 0; i < settings.height; i++) {
         for (int j = 0; j < settings.width; j++) {
@@ -33,7 +33,7 @@ void raytracer_scene(camera_settings_t settings, int tcount, triangle_t *triangl
 
             ray_t ray = {
                 origin,
-                point
+                vector_subtract(point, origin)
             };
 
             int index = (i * settings.width + j) * 3;
@@ -43,7 +43,7 @@ void raytracer_scene(camera_settings_t settings, int tcount, triangle_t *triangl
 
             double closest = -1;
 
-            for (int k = 0; k < 3; k++) {
+            for (int k = 0; k < tcount; k++) {
                 double t = shoot_triangle(ray, triangles[k]);
                 if (t >= 0 && (closest == -1 || t < closest)) {
                     closest = t;

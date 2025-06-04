@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Debug executable",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/raytracer",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}",
+        "environment": [],
+        "externalConsole": false,
+        "preLaunchTask": "build",
+        "MIMode": "gdb",
+        "miDebuggerPath": "/usr/bin/gdb"  // adjust if needed
+      }
+    ]
+  }
+  

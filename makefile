@@ -1,8 +1,12 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -O2
+CFLAGS = -Wall -Wextra
+
+ifeq ($(MAKECMDGOALS),debug)
+    CFLAGS += -g
+endif
 
 TARGET = raytracer
-SRC = main.c raytracer.c bmp.c geometry.c vector.c
+SRC = main.c raytracer.c bmp.c geometry.c vector.c obj.c
 OBJ = $(SRC:.c=.o)
 
 all: $(TARGET)
@@ -15,3 +19,7 @@ $(TARGET): $(OBJ)
 
 clean:
 	@rm -f $(TARGET) $(OBJ)
+
+.PHONY: all clean debug
+
+debug: all
