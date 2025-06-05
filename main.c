@@ -14,6 +14,11 @@ int main() {
         return -1;
     }
 
+    triangle_cache_t **caches = malloc(asset->tcount * sizeof(triangle_cache_t *));
+    for (int i = 0; i < asset->tcount; i++) {
+        caches[i] = triangle_cache_create(asset->triangles[i]);
+    }
+
     vector_t source = {1, 1, 1};
     source = vector_normalize(source);
 
@@ -29,7 +34,7 @@ int main() {
     };
 
     uint8_t pixels[HEIGHT * WIDTH * 3];
-    raytracer_scene(settings, asset->tcount, asset->triangles, pixels);
+    raytracer_scene(settings, asset->tcount, caches, pixels);
 
     if (bmp_export("output.bmp", HEIGHT, WIDTH, pixels) != 0) {
         printf("Error exporting BMP file\n");

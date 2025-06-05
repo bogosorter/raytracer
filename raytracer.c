@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "raytracer.h"
 
-void raytracer_scene(camera_settings_t settings, int tcount, triangle_t *triangles, uint8_t *pixels) {
+void raytracer_scene(camera_settings_t settings, int tcount, triangle_cache_t **caches, uint8_t *pixels) {
     double plane_width = tan(settings.fov_angle / 2.0) * 2;
     double plane_height = plane_width * settings.height / settings.width;
 
@@ -13,14 +13,6 @@ void raytracer_scene(camera_settings_t settings, int tcount, triangle_t *triangl
     vector_t p = vector_sum(settings.camera, vector_multiply(settings.forward, 1));
     p = vector_sum(p, vector_multiply(settings.up, plane_height / 2.0));
     p = vector_sum(p, vector_multiply(right, -plane_width / 2.0));
-
-    vector_t normals[tcount];
-    for (int i = 0; i < tcount; i++) {
-        vector_t ab = vector_subtract(triangles[i].b, triangles[i].a);
-        vector_t ac = vector_subtract(triangles[i].c, triangles[i].a);
-        normals[i] = vector_cross(ab, ac);
-        normals[i] = vector_normalize(normals[i]);
-    }
     
     for (int i = 0; i < settings.height; i++) {
         for (int j = 0; j < settings.width; j++) {
@@ -46,11 +38,11 @@ void raytracer_scene(camera_settings_t settings, int tcount, triangle_t *triangl
             double closest = -1;
 
             for (int k = 0; k < tcount; k++) {
-                double t = shoot_triangle(ray, triangles[k]);
+                double t = shoot_triangle(ray, caches[k]);
                 if (t >= 0 && (closest == -1 || t < closest)) {
                     closest = t;
 
-                    double luminosity = fabs(vector_dot(normals[k], settings.light));
+                    double luminosity = fabs(vector_dot(triangle_cache_get_normal(caches[k]), settings.light));
                     if (luminosity < 0) luminosity = settings.ambient_luminosity;
                     else luminosity = settings.ambient_luminosity + (1 - settings.ambient_luminosity) * luminosity;
                     uint8_t l = luminosity * 255;

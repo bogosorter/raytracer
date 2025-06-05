@@ -15,6 +15,6 @@ typedef struct {
     vector_t up;
 } camera_settings_t;
 
-void raytracer_scene(camera_settings_t settings, int tcount, triangle_t *triangles, uint8_t *pixels);
+void raytracer_scene(camera_settings_t settings, int tcount, triangle_cache_t **caches, uint8_t *pixels);
 
 #endif // RAYTRACER_H

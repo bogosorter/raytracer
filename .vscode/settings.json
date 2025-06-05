@@ -5,6 +5,7 @@
         "bmp.h": "c",
         "obj.h": "c",
         "geometry.h": "c",
-        "settings.h": "c"
+        "settings.h": "c",
+        "raytracer.h": "c"
     }
 }
