@@ -2,6 +2,7 @@
 #define RAYTRACER_H
 
 #include <stdint.h>
+#include "object.h"
 #include "geometry.h"
 
 typedef struct {
@@ -13,8 +14,8 @@ typedef struct {
     vector_t camera;
     vector_t forward;
     vector_t up;
-} camera_settings_t;
+} raytracer_settings_t;
 
-void raytracer_scene(camera_settings_t settings, int tcount, triangle_cache_t **caches, uint8_t *pixels);
+void raytracer_scene(raytracer_settings_t settings, object_t *object, uint8_t *pixels);
 
 #endif // RAYTRACER_H

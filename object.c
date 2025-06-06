@@ -2,16 +2,21 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
-#include "obj.h"
+#include "object.h"
+
+struct object {
+    int tcount;
+    triangle_data_t **triangles;
+};
 
 int count_numbers(const char *str);
 void read_vertices(char *line, int *vertices);
 
-int obj_load(char *filename, asset_t **asset) {
+object_t *object_load(char *filename) {
     FILE *file = fopen(filename, "r");
     if (!file) {
         printf("Couldn't open input file %s", filename);
-        return -1;
+        return NULL;
     }
 
     int vcount = 0;
@@ -33,9 +38,9 @@ int obj_load(char *filename, asset_t **asset) {
     // Second pass to read the data
     rewind(file);
 
-    *asset = malloc(sizeof(asset_t));
-    (*asset)->tcount = tcount;
-    (*asset)->triangles = malloc(tcount * sizeof(triangle_t));
+    object_t *object = malloc(sizeof(object_t));
+    object->tcount = tcount;
+    object->triangles = malloc(tcount * sizeof(triangle_data_t*));
     vector_t *vertices = malloc(vcount * sizeof(vector_t));
 
     int current_triangle = 0;
@@ -56,9 +61,11 @@ int obj_load(char *filename, asset_t **asset) {
             read_vertices(line, indexes);
 
             for (int i = 2; i < vertex_count; i++) {
-                (*asset)->triangles[current_triangle].a = vertices[indexes[0] - 1];
-                (*asset)->triangles[current_triangle].b = vertices[indexes[i - 1] - 1];
-                (*asset)->triangles[current_triangle].c = vertices[indexes[i] - 1];
+                triangle_t triangle;
+                triangle.a = vertices[indexes[0] - 1];
+                triangle.b = vertices[indexes[i - 1] - 1];
+                triangle.c = vertices[indexes[i] - 1];
+                object->triangles[current_triangle] = geometry_get_data(&triangle);
                 current_triangle++;
             }
         }
@@ -68,7 +75,14 @@ int obj_load(char *filename, asset_t **asset) {
 
     fclose(file);
     free(vertices);
-    return 0;
+    return object;
+}
+
+void object_free(object_t *object) {
+    for (int i = 0; i < object->tcount; i++) {
+        free(object->triangles[i]);
+    }
+    free(object->triangles);
 }
 
 int count_numbers(const char *str) {
@@ -104,3 +118,11 @@ void read_vertices(char *line, int *vertices) {
         token = strtok(NULL, " ");
     }
 }
+
+int object_triangle_count(object_t *object) {
+    return object->tcount;
+}
+triangle_data_t **object_get_triangles(object_t *object) {
+    return object->triangles;
+}
+

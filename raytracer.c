@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "raytracer.h"
 
-void raytracer_scene(camera_settings_t settings, int tcount, triangle_cache_t **caches, uint8_t *pixels) {
+void raytracer_scene(raytracer_settings_t settings, object_t *object, uint8_t *pixels) {
     double plane_width = tan(settings.fov_angle / 2.0) * 2;
     double plane_height = plane_width * settings.height / settings.width;
 
@@ -37,12 +37,15 @@ void raytracer_scene(camera_settings_t settings, int tcount, triangle_cache_t **
 
             double closest = -1;
 
+            int tcount = object_triangle_count(object);
+            triangle_data_t **triangles = object_get_triangles(object);
+
             for (int k = 0; k < tcount; k++) {
-                double t = shoot_triangle(ray, caches[k]);
+                double t = geometry_shoot_triangle(&ray, triangles[k]);
                 if (t >= 0 && (closest == -1 || t < closest)) {
                     closest = t;
 
-                    double luminosity = fabs(vector_dot(triangle_cache_get_normal(caches[k]), settings.light));
+                    double luminosity = fabs(vector_dot(geometry_get_normal(triangles[k]), settings.light));
                     if (luminosity < 0) luminosity = 0;
                     luminosity = settings.ambient_luminosity + luminosity * (1 - settings.ambient_luminosity);
                     uint8_t l = luminosity * 255;

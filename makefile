@@ -6,7 +6,7 @@ ifeq ($(MAKECMDGOALS),debug)
 endif
 
 TARGET = raytracer
-SRC = main.c raytracer.c bmp.c geometry.c vector.c obj.c
+SRC = main.c raytracer.c bmp.c geometry.c vector.c object.c
 OBJ = $(SRC:.c=.o)
 
 all: $(TARGET)
