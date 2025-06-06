@@ -111,6 +111,8 @@ vector_t triangle_cache_get_normal(const triangle_cache_t *cache) {
 }
 
 double shoot_triangle(ray_t ray, triangle_cache_t *cache) {
+    if (!shoot_orthogonal_box(ray, cache->hitbox_start, cache->hitbox_end)) return -1;
+    
     double t = shoot_plane(ray, cache->plane);
     if (t < 0) return -1;
     vector_t hit = vector_sum(ray.origin, vector_multiply(ray.direction, t));
