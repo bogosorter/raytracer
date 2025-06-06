@@ -11,7 +11,7 @@ typedef struct {
 vector_t vector_normalize(vector_t v);
 vector_t vector_subtract(vector_t a, vector_t b);
 vector_t vector_sum(vector_t a, vector_t b);
-vector_t vector_multiply(vector_t v, double k);
+vector_t vector_scale(vector_t v, double k);
 double vector_dot(vector_t a, vector_t b);
 vector_t vector_cross(vector_t a, vector_t b);
 

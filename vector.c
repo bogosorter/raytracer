@@ -26,7 +26,7 @@ vector_t vector_sum(vector_t a, vector_t b) {
     return result;
 }
 
-vector_t vector_multiply(vector_t v, double k) {
+vector_t vector_scale(vector_t v, double k) {
     vector_t result;
     result.x = v.x * k;
     result.y = v.y * k;
@@ -49,5 +49,5 @@ vector_t vector_cross(vector_t a, vector_t b) {
 vector_t vector_project(vector_t a, vector_t b) {
     b = vector_normalize(b);
     double magnitude = vector_dot(a, b);
-    return vector_multiply(b, magnitude);
+    return vector_scale(b, magnitude);
 }

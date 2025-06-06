@@ -10,9 +10,9 @@ void raytracer_scene(raytracer_settings_t settings, object_t *object, uint8_t *p
     right = vector_normalize(right);
 
     // Point P is the top left point of the screen
-    vector_t p = vector_sum(settings.camera, vector_multiply(settings.forward, 1));
-    p = vector_sum(p, vector_multiply(settings.up, plane_height / 2.0));
-    p = vector_sum(p, vector_multiply(right, -plane_width / 2.0));
+    vector_t p = vector_sum(settings.camera, vector_scale(settings.forward, 1));
+    p = vector_sum(p, vector_scale(settings.up, plane_height / 2.0));
+    p = vector_sum(p, vector_scale(right, -plane_width / 2.0));
     
     for (int i = 0; i < settings.height; i++) {
         for (int j = 0; j < settings.width; j++) {
@@ -22,8 +22,8 @@ void raytracer_scene(raytracer_settings_t settings, object_t *object, uint8_t *p
                 printf("Progress: %.2f%%\n", (double)i / settings.height * 100);
             }
 
-            vector_t point = vector_sum(p, vector_multiply(settings.up, -i * plane_height / settings.height));
-            point = vector_sum(point, vector_multiply(right, j * plane_width / settings.width));
+            vector_t point = vector_sum(p, vector_scale(settings.up, -i * plane_height / settings.height));
+            point = vector_sum(point, vector_scale(right, j * plane_width / settings.width));
 
             ray_t ray = {
                 settings.camera,

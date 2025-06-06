@@ -66,7 +66,7 @@ double geometry_shoot_triangle(ray_t *ray, triangle_data_t *cache) {
     
     double t = geometry_shoot_plane(ray, &cache->plane);
     if (t < 0) return -1;
-    vector_t hit = vector_sum(ray->origin, vector_multiply(ray->direction, t));
+    vector_t hit = vector_sum(ray->origin, vector_scale(ray->direction, t));
 
     // Check if the hit point is inside the triangle using barycentric coordinates
     
