@@ -43,8 +43,8 @@ void raytracer_scene(camera_settings_t settings, int tcount, triangle_cache_t **
                     closest = t;
 
                     double luminosity = fabs(vector_dot(triangle_cache_get_normal(caches[k]), settings.light));
-                    if (luminosity < 0) luminosity = settings.ambient_luminosity;
-                    else luminosity = settings.ambient_luminosity + (1 - settings.ambient_luminosity) * luminosity;
+                    if (luminosity < 0) luminosity = 0;
+                    luminosity = settings.ambient_luminosity + luminosity * (1 - settings.ambient_luminosity);
                     uint8_t l = luminosity * 255;
                     
                     pixels[index] = l;

@@ -19,15 +19,12 @@ int main() {
         caches[i] = triangle_cache_create(asset->triangles[i]);
     }
 
-    vector_t source = {1, 1, 1};
-    source = vector_normalize(source);
-
     camera_settings_t settings = {
         .height = HEIGHT,
         .width = WIDTH,
         .fov_angle = FOV_ANGLE,
         .ambient_luminosity = AMBIENT_LUMINOSITY,
-        .light = source,
+        .light = vector_normalize((vector_t){-1, 1, 1}),
         .camera = {-3, 0.5, 2.5},
         .forward = vector_normalize((vector_t){1.3, -0.3, -1}),
         .up = vector_normalize((vector_t){0, 1, 0})
